@@ -1,0 +1,46 @@
+name: Build, Test and Commit Angular App to main/docs
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-test-and-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: |
+          npx ng test --watch=false --browsers=ChromeHeadless
+        env:
+          CHROME_BIN: /usr/bin/google-chrome
+
+      - name: Build Angular app into docs/
+        run: |
+          npx ng build --output-path=docs --base-href=https://chithra2024.github.io/angular_deploy4/
+
+      # Uncomment if you want to auto-commit the docs after build
+      - name: Configure Git
+        run: |
+          git config user.name "chithra2024"
+          git config user.email "chithrasaravanan2024@gmail.com"
+
+      - name: Commit and push built files
+        run: |
+          git add docs
+          git commit -m "Build Angular app and update docs directory" || echo "No changes to commit"
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.DELSEC }}
