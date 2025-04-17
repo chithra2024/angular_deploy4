@@ -11,10 +11,10 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/cicd",
-            "index": "src/index.html",
+            "main": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
